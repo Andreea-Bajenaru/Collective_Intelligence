@@ -3,6 +3,7 @@ import pygame as pg
 from pygame.math import Vector2
 from vi import Agent, Simulation
 from vi.config import Config, dataclass, deserialize
+import numpy as np
 
 
 @deserialize
@@ -27,9 +28,32 @@ class Bird(Agent):
         # Pac-man-style teleport to the other end of the screen when trying to escape
         self.there_is_no_escape()
         #YOUR CODE HERE -----------
-        a, b, c = FlockingConfig().weights()
-        
-        
+        # a, b, c = FlockingConfig().weights()
+        in_proximity = list(self.in_proximity_accuracy())
+        number_of_neighbours = self.in_proximity_accuracy().count()
+        if number_of_neighbours == 0:
+            self.pos += self.move
+        else:
+            velocity = Vector2(0,0)
+            pos = Vector2(0,0)
+            total_pos = Vector2(0,0)
+            for agent, dist in in_proximity:
+                velocity += agent.move.normalize()
+                pos += self.pos - agent.pos
+                total_pos += agent.pos
+            average_pos = total_pos / number_of_neighbours
+            fc = average_pos - self.pos
+            cohesion = fc - self.move
+            average_vel = velocity / number_of_neighbours
+            separtion = pos / number_of_neighbours
+            alignment = average_vel - self.move
+            acceleration = ((self.config.alignment_weight * alignment) + (self.config.separation_weight * separtion) + (self.config.cohesion_weight * cohesion)) / self.config.mass
+
+            if self.move.length() > self.config.movement_speed:
+                self.move += (self.move.normalize() * self.move.length())
+
+            self.move += acceleration 
+            self.pos += self.move
 
         #END CODE -----------------
 
@@ -79,6 +103,7 @@ class FlockingLive(Simulation):
             movement_speed=1,
             radius=50,
             seed=1,
+            
         )
     )
     .batch_spawn_agents(50, Bird, images=["images/bird.png"])
