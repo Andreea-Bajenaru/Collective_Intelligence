@@ -30,46 +30,73 @@ class Bird(Agent):
         self.there_is_no_escape()
         #YOUR CODE HERE -----------
 
+        # For simplicity, we refer to the current agent as "Bird" and the neighbouring agents as "Individuals" or "Neighbours"
+
+        # If a bird has no neigbours, it continues wandering,
         if self.in_proximity_accuracy().count() == 0:
             self.pos += self.move
     
         else:
-            # part 1 -- allignment
-            in_proximity = list(self.in_proximity_accuracy())
+            # Part 1 - Alignment
+            # First we need to create a list with all the neigbours of an individual.
+            neighbours = list(self.in_proximity_accuracy())
+            # Then we initiate the sum.
             sum_velocity = Vector2(0,0)
-            for boid,distance in in_proximity:
+            # Then we loop through the list and add the velocity of each neighbour to the sum.
+            for boid, _ in neighbours:
+                # The velocity has to be normalized otherwise the birds stop moving when they meet a neighbour
                 sum_velocity += boid.move.normalize()
 
-            avg_velocity = sum_velocity/self.in_proximity_accuracy().count()
-            allignment = avg_velocity - self.move
+            # Then we calculate the average velocity of the neighbours.
+            avg_velocity = sum_velocity / len(neighbours)
+            # The birds adjust their alignment accourding to their neighbours, 
+            # so the alignment is calculated by subtracting the move of the individual from the average velicity.
+            # This helps the bird join the flock.
+            alignment = avg_velocity - self.move
 
-            # part 2 -- seperation
+            # Part 2 - Seperation
+            # We initialize the sum of the positions
             sum_pos = Vector2(0,0)
-            for boid,distance in in_proximity:
-                sum_pos += self.pos-boid.pos
+            # Then we loop through the list and add the position of each neighbour to the sum.
+            for boid, _ in neighbours:
+                # Just the positions would result in a wrong value, 
+                # so for each neighbouring individual we subtract its position from the bird position. 
+                sum_pos += self.pos - boid.pos
 
-            seperation = sum_pos/self.in_proximity_accuracy().count()
+            # Then we calculate the average position of the neighbours.
+            # This helps make sure that the birds don't converge in the same position (overlap)
+            seperation = sum_pos / len(neighbours)
 
-            # part 3 -- cohesion
+            # Part 3 - Cohesion
+            # We initialize the average position
             avg_pos = Vector2(0,0)
-            for boid,distance in in_proximity:
+            # Then we loop through the list and add the position of each neighbour to the sum.
+            for boid, _ in neighbours:
                 avg_pos += boid.pos
 
-            avg_pos = avg_pos/self.in_proximity_accuracy().count()
+            # Then we calculate the average position of the neighbours.
+            avg_pos = avg_pos / len(neighbours)
 
-            cohesion_force = avg_pos-self.pos
+            # The birds adjust their cohesion force accourding to their neighbours,
+            # so the cohesion is calculated by subtracting the position of the individual from the average position.
+            # This helps the bird join the flock.
+            cohesion_force = avg_pos - self.pos
             cohesion = cohesion_force - self.move
 
-            total_force = (allignment*self.config.alignment_weight + seperation*self.config.separation_weight
-                            + cohesion*self.config.cohesion_weight) / self.config.mass
-
-
+            # Finally we calculate the total force by adding the three forces together. Multiplied by their individual weight.
+            # Then we divide by the mass to make the merging of the flock more natural.
+            total_force = (alignment * self.config.alignment_weight +
+                            seperation * self.config.separation_weight +
+                            cohesion * self.config.cohesion_weight) / self.config.mass
+ 
+            # If the speed of the birds becomes too high, we decrease it.
             if self.move.length() > sum_velocity.length():
                 self.move.normalize() * sum_velocity
 
-            self.move+= total_force
+            # We add the total force to the move of the bird.
+            self.move += total_force
+            # We update the position of the bird.
             self.pos += self.move
-
 
         #END CODE -----------------
 
