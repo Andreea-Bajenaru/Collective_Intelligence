@@ -27,6 +27,7 @@ class Bird(Agent):
         # Pac-man-style teleport to the other end of the screen when trying to escape
         self.there_is_no_escape()
         #YOUR CODE HERE -----------
+        self.pos += self.move
         a, b, c = FlockingConfig().weights()
         
         
