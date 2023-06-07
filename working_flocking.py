@@ -97,7 +97,6 @@ class Bird(Agent):
             self.move += total_force
             # We update the position of the bird.
             self.pos += self.move
-
         #END CODE -----------------
 
 
@@ -138,6 +137,8 @@ class FlockingLive(Simulation):
         a, c, s = self.config.weights()
         print(f"A: {a:.1f} - C: {c:.1f} - S: {s:.1f}")
 
+config = Config()
+x, y = config.window.as_tuple()
 
 (
     FlockingLive(
@@ -149,5 +150,7 @@ class FlockingLive(Simulation):
         )
     )
     .batch_spawn_agents(50, Bird, images=["images/bird.png"])
+    .spawn_obstacle("images/triangle@50px.png", x //2 , y // 2)
     .run()
+    
 )
