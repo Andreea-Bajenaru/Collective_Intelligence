@@ -5,6 +5,7 @@ from pygame.math import Vector2
 from vi import Agent, Simulation
 from typing import Tuple
 from vi.config import Config, dataclass, deserialize
+import numpy as np
 
 
 @deserialize
@@ -98,8 +99,53 @@ class Bird(Agent):
             self.move += total_force
             # We update the position of the bird
             self.pos += self.move
-        #END CODE -----------------
 
+            #x = self.obstacle_intersections()
+
+        # find how to implement.
+        # If the hunter is close to a bird. the bird changes direction to get away from the hunter.
+        idea = """
+        Get direction of hunter. chage direction to average of (hunter-direction, bird-direction)
+        This way the movement feels natural.
+        """
+        # the birds have to detect the hunter early.
+        # if they see the hunter too late they die.
+        # and das is not gut
+        # maybe create our own function to figure it out?
+
+        #hunter = (
+        #    self.in_proximity_accuracy() # How can we extrend the range?
+        #    .without_distance()
+        #    .filter_kind(Hunter)
+        #    .first()
+        #)
+        #
+        #if hunter is not None:
+        #    self.pos -= self.move * 2
+        #END CODE -----------------
+        
+class Hunter(Bird):
+    config: FlockingConfig
+    
+    def change_position(self):
+        # Pac-man-style teleport to the other end of the screen when trying to escape
+        self.there_is_no_escape()
+        
+        #YOUR CODE HERE -----------
+        # Agent wanders around until it finds the "Prey". This could be improved. 
+        self.pos += self.move
+        
+    def update(self):
+        prey = (
+            self.in_proximity_accuracy()
+            .without_distance()
+            .filter_kind(Bird)
+            .first()
+        )
+
+        if prey is not None:
+            prey.kill()
+        
 
 class Selection(Enum):
     ALIGNMENT = auto()
@@ -151,7 +197,8 @@ x, y = config.window.as_tuple()
         )
     )
     .batch_spawn_agents(50, Bird, images=["images/bird.png"])
-    .spawn_obstacle("images/triangle@50px.png", x //2 , y // 2)
+    .spawn_agent(Hunter, images=["images/green.png"])
+    #.spawn_obstacle("images/triangle@200px.png", x //1.5 , y // 2)
     .run()
     
 )
