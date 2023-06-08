@@ -99,7 +99,7 @@ class Bird(Agent):
             self.move += total_force
             # We update the position of the bird
             self.pos += self.move
-
+            
             #x = self.obstacle_intersections()
 
         # find how to implement.
@@ -108,6 +108,7 @@ class Bird(Agent):
         Get direction of hunter. chage direction to average of (hunter-direction, bird-direction)
         This way the movement feels natural.
         """
+
         # the birds have to detect the hunter early.
         # if they see the hunter too late they die.
         # and das is not gut
@@ -124,7 +125,7 @@ class Bird(Agent):
         #    self.pos -= self.move * 2
         #END CODE -----------------
         
-class Hunter(Bird):
+class Hunter(Agent):
     config: FlockingConfig
     
     def change_position(self):
