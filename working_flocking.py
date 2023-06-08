@@ -3,7 +3,7 @@ from enum import Enum, auto
 import pygame as pg
 from pygame.math import Vector2
 from vi import Agent, Simulation
-from typing import Tuple
+from typing import Generator, Tuple
 from vi.config import Config, dataclass, deserialize
 import numpy as np
 
@@ -26,15 +26,52 @@ class FlockingConfig(Config):
 class Bird(Agent):
     config: FlockingConfig
 
+    def avoid_stuff(self):
+        # This method changes the self.move value so the agent avoid obstacles
+        dir = Vector2(0,0)
+        for obstacle in self.obstacle_intersections(scale=1.5):
+            dif = (obstacle + self.pos) 
+            dir += dif.normalize()
+        return dir
+    
+    def obstacle_coord(self):
+        # This method identifies and returns the coordinates that the agent
+        # should consider as obstacles
+        coordinates = []
+        start_x = 0
+        start_y = 0
+        # The variable obs holds the centre point of an obstacle
+        # and sinse we know the shape and position of the obstacle
+        # we can calculate the rest.
+        for obs in self.obstacle_intersections():
+                # Retrieve X coordinates of the obstacle
+                start_x = int(obs[0])
+                # Retrieve Y coordinates of the obstacle
+                start_y = int(obs[1])
+                # The max size can be edited accordin to the obstacle
+                max_size = 200
+                half_size = max_size // 2
+                # We loop through the coordinates of the obstacle
+                for x in range(start_x - half_size, start_x + half_size + 1):
+                    for y in range(start_y - half_size, start_y + half_size + 1):
+                        # We check if the coordinates are within the screen
+                        if 0 <= x <= 750 and 0 <= y <= 750:
+                            # We apend the coordinates to a list, in the Vector2 format
+                            # since this is what the engine uses.
+                            coordinates.append(Vector2(x, y))
+        # Return the coordinates
+        return coordinates
+
     def change_position(self):
         # Pac-man-style teleport to the other end of the screen when trying to escape
         self.there_is_no_escape()
         #YOUR CODE HERE -----------
 
         # For simplicity, we refer to the current agent as "Bird" and the neighbouring agents as "Individuals" or "Neighbours"
-
+        
         # If a bird has no neigbours, it continues wandering
         if self.in_proximity_accuracy().count() == 0:
+            
             self.pos += self.move
     
         else:
@@ -97,35 +134,28 @@ class Bird(Agent):
 
             # We add the total force to the move of the bird
             self.move += total_force
-            # We update the position of the bird
-            self.pos += self.move
             
-            #x = self.obstacle_intersections()
+            # Part 4 - Obstacle Avoidance
+            # Here we initialise the coordinates list
+            coordinates = self.obstacle_coord()
+            
+            # We loop through the list and check if the bird is close to an obstacle
+            want = 20
+            for i in range(0, len(coordinates)):
+                if self.pos.distance_to(coordinates[i]) <= want:
+                    # If the agent is closer to the obstacle than we want
+                    # it moves away
+                    self.move = self.avoid_stuff()
 
-        # find how to implement.
-        # If the hunter is close to a bird. the bird changes direction to get away from the hunter.
-        idea = """
-        Get direction of hunter. chage direction to average of (hunter-direction, bird-direction)
-        This way the movement feels natural.
-        """
-
-        # the birds have to detect the hunter early.
-        # if they see the hunter too late they die.
-        # and das is not gut
-        # maybe create our own function to figure it out?
-
-        #hunter = (
-        #    self.in_proximity_accuracy() # How can we extrend the range?
-        #    .without_distance()
-        #    .filter_kind(Hunter)
-        #    .first()
-        #)
-        #
-        #if hunter is not None:
-        #    self.pos -= self.move * 2
-        #END CODE -----------------
+            # We update the position of the bird
+            self.pos += self.move        
+            #END CODE -----------------
         
-class Hunter(Agent):
+class Hunter(Bird):
+    """
+    A Hunter is a Bird that tries to catch other Birds.
+    This is an experiment that we ended up not building upon or improving.
+    """
     config: FlockingConfig
     
     def change_position(self):
@@ -198,8 +228,8 @@ x, y = config.window.as_tuple()
         )
     )
     .batch_spawn_agents(50, Bird, images=["images/bird.png"])
-    .spawn_agent(Hunter, images=["images/green.png"])
-    #.spawn_obstacle("images/triangle@200px.png", x //1.5 , y // 2)
+    #.spawn_agent(Hunter, images=["images/green.png"])
+    .spawn_obstacle("images/triangle@200px.png", x // 2 , y // 2)
     .run()
     
 )
