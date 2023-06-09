@@ -26,11 +26,18 @@ class FlockingConfig(Config):
 class Bird(Agent):
     config: FlockingConfig
 
+    size_f2 = 750 //2
     def avoid_stuff(self):
         # This method changes the self.move value so the agent avoid obstacles
         dir = Vector2(0,0)
+        
         for obstacle in self.obstacle_intersections(scale=1.5):
-            dif = (obstacle + self.pos) 
+            if self.pos[0] < self.size_f2:# and self.pos[1] < 495:
+                dif = (self.pos - obstacle)
+            elif self.pos[0] < self.size_f2 and self.pos[1] > self.size_f2:
+                dif = (obstacle + self.pos)
+            else: 
+                dif = (obstacle + self.pos)
             dir += dif.normalize()
         return dir
     
