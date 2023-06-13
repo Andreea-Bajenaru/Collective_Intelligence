@@ -4,6 +4,8 @@ from pygame.math import Vector2
 from pygame.surface import Surface
 from vi import Agent, Simulation, Config
 import polars as pl
+from typing import list
+from typing import Union
 import seaborn as sns
 from vi.simulation import HeadlessSimulation
 
