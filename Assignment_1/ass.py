@@ -9,7 +9,7 @@ from vi.simulation import HeadlessSimulation
 
 
 class MyAgent(Agent):
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Union[Vector2, None] = None, move: Union[Vector2, None] = None):
         super().__init__(images, simulation, pos, move)
     
 """ def update(self):
