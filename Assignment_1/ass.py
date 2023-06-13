@@ -32,11 +32,8 @@ class MyAgent(Agent):
 
 config = Config()
 x, y = config.window.as_tuple()
-(
-Simulation(Config(radius=25))
-                        .spawn_site("images/site.png", x//2, y//2)
-                        .batch_spawn_agents(50, MyAgent,images=["images/red.png"])
-                        #.spawn_site("images/site.png", x//2, y//2)
-                        
-                        .run()
-)
+
+Simulation(Config(radius=50)).batch_spawn_agents(100, MyAgent,
+                    images=["images/red.png"
+                            ]).spawn_site("images/site.png", 
+                                          x//2, y//2).spawn_site("images/output-onlinepngtools.png", x=100, y=100).run()
