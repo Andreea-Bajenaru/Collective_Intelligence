@@ -46,4 +46,4 @@ Simulation(Config(radius=20,seed=1))
                         #.spawn_site("images/site.png", x//2, y//2)
                         
                         .run()
-)
+
