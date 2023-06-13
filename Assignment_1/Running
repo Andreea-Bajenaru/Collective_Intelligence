@@ -21,4 +21,4 @@ config = Config()
 x, y = config.window.as_tuple()
 
 Simulation(Config(radius=50)).batch_spawn_agents(100, MyAgent,
-                    images=['/Users/malak/Desktop/Assignment_1/images/red.png'
+                    images=['images/red.png'])
