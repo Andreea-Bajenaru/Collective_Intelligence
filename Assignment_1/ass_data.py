@@ -83,9 +83,9 @@ lstx = np.random.choice(range(0,x), 2, replace=False)
 lsty = np.random.choice(range(0,y), 2, replace=False)
 
 df = (Simulation(Config(radius=25))
-                        .spawn_site("images/site.png", 200, 300)
-                        .spawn_site("images/site1.png", 500, 300)
-                        .batch_spawn_agents(50, MyAgent,images=["images/red.png"])
+                        .spawn_site("Assignment_1/images/site.png", 200, 300)
+                        .spawn_site("Assignment_1/images/site1.png", 500, 300)
+                        .batch_spawn_agents(50, MyAgent,images=["Assignment_1/images/red.png"])
                         
                         .run()
 

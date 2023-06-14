@@ -21,6 +21,6 @@ config = Config()
 x, y = config.window.as_tuple()
 
 Simulation(Config(radius=50)).batch_spawn_agents(100, MyAgent,
-                    images=['images/red.png'
-                            ]).spawn_site("images/site.png", 
-                                          x//2, y//2).spawn_site("images/output-onlinepngtools.png", x=100, y=100).run()
+                    images=['Assignment_1/images/red.png'
+                            ]).spawn_site("Assignment_1/images/site.png", 
+                                          x//2, y//2).spawn_site("Assignment_1/images/output-onlinepngtools.png", x=100, y=100).run()
