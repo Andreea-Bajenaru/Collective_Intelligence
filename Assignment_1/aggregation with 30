@@ -1,0 +1,110 @@
+# Assignment 1
+from typing import Optional
+from pygame.math import Vector2
+from pygame.surface import Surface
+from vi import Agent, Simulation, Config
+import polars as pl
+from typing import List
+from typing import Union
+import seaborn as sns
+from vi.simulation import HeadlessSimulation
+import numpy as np
+import random
+import csv
+import pandas as pd
+
+class MyAgent(Agent):
+    def __init__(self, images: List[Surface], simulation: HeadlessSimulation, pos: Union[Vector2, None] = None, move: Union[Vector2, None] = None, count=20):
+        super().__init__(images, simulation, pos, move)
+        self.count = count
+
+
+    def update(self):
+        self.there_is_no_escape()
+
+
+        if self.in_proximity_accuracy().count() == 1:
+                self.freeze_movement()
+                if random.randint(1,15) == 5:
+                    self.continue_movement()
+
+        elif self.in_proximity_accuracy().count() == 2:
+            self.freeze_movement()
+            if random.randint(1,25) == 5:
+                self.continue_movement()
+
+        elif self.in_proximity_accuracy().count() == 3:
+            self.freeze_movement()
+            if random.randint(1,50) == 5:
+                self.continue_movement()
+
+        elif self.in_proximity_accuracy().count() >= 4:
+            self.freeze_movement()
+
+        elif self.in_proximity_accuracy().count() == 6:
+            self.freeze_movement()
+            if random.randint(1,75) == 5:
+                self.continue_movement()
+
+        elif self.in_proximity_accuracy().count() == 8:
+            self.freeze_movement()
+            if random.randint(1,100) == 5:
+                self.continue_movement()
+
+        elif self.in_proximity_accuracy().count() >= 10:
+            self.freeze_movement()
+
+        elif self.in_proximity_accuracy().count() == 12:
+            self.freeze_movement()
+            if random.randint(1,200) == 5:
+                self.continue_movement()
+
+        elif self.in_proximity_accuracy().count() == 14:
+            self.freeze_movement()
+            if random.randint(1,300) == 5:
+                self.continue_movement()
+        
+        elif self.in_proximity_accuracy().count() >= 16:
+            self.freeze_movement()
+    
+        else:
+            self.pos += self.move
+                        
+"""
+1 agent -> 8
+"""
+
+config = Config()
+x, y = config.window.as_tuple()
+
+lstx = np.random.choice(range(0,x), 2, replace=False)
+lsty = np.random.choice(range(0,y), 2, replace=False)
+
+df = (Simulation(Config(radius=30, fps_limit = 0))
+                        .batch_spawn_agents(30, MyAgent,images=["images/green.png"])
+                        .run()
+                        )
+
+
+plot = df.snapshots
+#print(plot.groupby(['id', 'x', 'y', 'site']))
+df_snapshots = pd.DataFrame(plot)
+df_snapshots.to_csv('snapshots.csv', index=False)
+
+
+dfs = pd.read_csv('snapshots.csv')
+columns_to_delete = ['0', '4']
+
+# Delete the specified columns
+dfss = dfs.drop(columns=columns_to_delete)
+column_name_mapping = {'1': 'id',
+                    '2': 'x',
+                    '3': 'y',
+                    '5': 'site'}
+
+# Rename the columns using the dictionary
+dfsss = dfss.rename(columns=column_name_mapping)
+dfsss.to_csv('filename_updated.csv', index=False)
+dfsss.to_excel('filename.xlsx', index=False)
+# Print the DataFrame
+print(dfsss)
