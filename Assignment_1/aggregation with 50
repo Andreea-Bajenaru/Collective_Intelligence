@@ -54,15 +54,11 @@ class MyAgent(Agent):
             if random.randint(1,100) == 5:
                 self.continue_movement()
 
-        elif self.in_proximity_accuracy().count() == 12:
+        elif self.in_proximity_accuracy().count() >= 12:
             self.freeze_movement()
-            if random.randint(1,200) == 5:
-                self.continue_movement()
 
-        elif self.in_proximity_accuracy().count() == 14:
+        elif self.in_proximity_accuracy().count() >= 14:
             self.freeze_movement()
-            if random.randint(1,300) == 5:
-                self.continue_movement()
         
         elif self.in_proximity_accuracy().count() >= 16:
             self.freeze_movement()
@@ -74,7 +70,15 @@ class MyAgent(Agent):
 
         elif self.in_proximity_accuracy().count() >= 21:
             self.freeze_movement()
-    
+
+        elif self.in_proximity_accuracy().count() == 23:
+            self.freeze_movement()
+            if random.randint(1,600) == 5:
+                self.continue_movement()
+        
+        elif self.in_proximity_accuracy().count() >= 26:
+            self.freeze_movement()
+        
         else:
             self.pos += self.move
                         
@@ -88,8 +92,8 @@ x, y = config.window.as_tuple()
 lstx = np.random.choice(range(0,x), 2, replace=False)
 lsty = np.random.choice(range(0,y), 2, replace=False)
 
-df = (Simulation(Config(radius=45, fps_limit = 0))
-                        .batch_spawn_agents(30, MyAgent,images=["images/green.png"])
+df = (Simulation(Config(radius=35, fps_limit = 0))
+                        .batch_spawn_agents(50, MyAgent,images=["images/green.png"])
                         .run()
                         )
 
