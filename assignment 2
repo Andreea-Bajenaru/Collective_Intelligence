@@ -1,1 +1,48 @@
+from typing import Optional
+from pygame.math import Vector2
+from pygame.surface import Surface
+from vi import Agent, Simulation, Config
+import polars as pl
+from typing import List
+import numpy as np
 
+
+class Prey(Agent):
+
+    def update(self):
+        self.there_is_no_escape()
+        rep_prob = np.random.uniform()
+                
+        if rep_prob < 0.003:
+            self.reproduce()
+
+        self.pos += self.move
+
+class Hunter(Agent):
+
+    def update(self):
+        self.there_is_no_escape()
+        survive = np.random.uniform()
+        if survive < 0.001:
+            self.kill()
+        prey = (
+            self.in_proximity_accuracy()
+            .without_distance()
+            .filter_kind(Prey)
+            .first()
+        )
+
+        if prey is not None:
+            prey.kill()
+            self.reproduce()
+
+        self.pos += self.move
+
+config = Config()
+x, y = config.window.as_tuple()
+
+(Simulation(Config(radius=25, fps_limit=120))
+                        .batch_spawn_agents(1, Prey,images=["images/green.png"])
+                        .batch_spawn_agents(10, Hunter,images=["images/red.png"])
+                        .run()
+                        )
