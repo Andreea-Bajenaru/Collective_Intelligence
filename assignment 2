@@ -68,7 +68,7 @@ x, y = config.window.as_tuple()
 
 df = (Simulation(Config(radius=25, fps_limit=120))
                         .batch_spawn_agents(20, Prey,images=["images/green.png"])
-                        .batch_spawn_agents(, Hunter,images=["images/red.png"])
+                        .batch_spawn_agents(10, Hunter,images=["images/red.png"])
                         .run()
                         )
 
