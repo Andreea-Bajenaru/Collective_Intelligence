@@ -1,3 +1,8 @@
+# Ideas for assignment 2
+#   1. Hunter - Prey
+#   2. Game of life (Can't really tell if it is relevant)
+#   3. 
+
 from typing import Optional
 from pygame.math import Vector2
 from pygame.surface import Surface
@@ -5,7 +10,11 @@ from vi import Agent, Simulation, Config
 import polars as pl
 from typing import List
 import numpy as np
+import pandas as pd
+from vi.simulation import HeadlessSimulation
 
+pop_hunt = []
+pop_prey = []
 
 class Prey(Agent):
 
@@ -27,8 +36,8 @@ class Hunter(Agent):
             self.kill()
         prey = (
             self.in_proximity_accuracy()
-            .without_distance()
             .filter_kind(Prey)
+            .without_distance()
             .first()
         )
 
@@ -41,8 +50,30 @@ class Hunter(Agent):
 config = Config()
 x, y = config.window.as_tuple()
 
-(Simulation(Config(radius=25, fps_limit=120))
+df = (Simulation(Config(radius=25, fps_limit=120))
                         .batch_spawn_agents(1, Prey,images=["images/green.png"])
                         .batch_spawn_agents(10, Hunter,images=["images/red.png"])
                         .run()
                         )
+
+plot = df.snapshots
+df_snapshots = pd.DataFrame(plot)
+df_snapshots.to_csv('Assignment 2/agents_count.csv',index=False)
+
+
+dfs = pd.read_csv('snapshots.csv')
+columns_to_delete = ['0', '2', '3']
+#
+## Delete the specified columns
+dfss = dfs.drop(columns=columns_to_delete)
+column_name_mapping = {'1': 'id', 
+                       '4': 'pop'}
+#
+## Rename the columns using the dictionary
+dfsss = dfss.rename(columns=column_name_mapping)
+dfsss.to_csv('Assignment 2/sim_data.csv', index=False)
+
+
+radius = 750
+pop_prey = None # self.in_proximity_accuracy().filter_kind(prey).count()
+pop_hunt = None # self.in_proximity_accuracy().filter_kind(hunter).count()
