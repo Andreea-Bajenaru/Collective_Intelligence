@@ -36,7 +36,7 @@ class Prey(Agent):
         self.there_is_no_escape()
         rep_prob = np.random.uniform()
                 
-        if rep_prob < 0.0004:
+        if rep_prob < 0.0009:
             self.reproduce()
 
         prey = (
@@ -72,7 +72,7 @@ class Hunter(Agent):
 
         # Comment the following for energy level sim
         survive = np.random.uniform()
-        if survive < 0.000001:
+        if survive < 0.001:
            self.kill()
         ###########################
         prey = (
@@ -159,7 +159,7 @@ config = Config()
 x, y = config.window.as_tuple()
 
 df = (Simulation(Config(radius=25, fps_limit=120))
-                        .batch_spawn_agents(18, Prey,images=["images/white.png"])
+                        .batch_spawn_agents(20, Prey,images=["images/white.png"])
                         .batch_spawn_agents(10, Hunter,images=["images/red.png"])
                         .batch_spawn_agents(15, Grass, images=["images/green.png"])
                         .run()
