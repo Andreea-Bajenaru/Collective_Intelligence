@@ -198,16 +198,16 @@ x, y = config.window.as_tuple()
 # specifi_killing_prob = np.random(0, list_number)
 
 
-# for i in range(3):
-df = (Simulation(Config(radius=25, fps_limit=60, duration=60*120))
-.batch_spawn_agents(20, Prey,images=["images/white.png"])
-.batch_spawn_agents(10, Hunter,images=["images/red.png"])
-.batch_spawn_agents(15, Grass, images=["images/green.png"])
-.run()
-)
-data = df.snapshots
-df_snapshots = pd.DataFrame(data)
-df_snapshots.to_csv(f"proper_data5.csv", index=False)
+for i in range(5):
+    df = (HeadlessSimulation(Config(radius=25, fps_limit=60, duration=60*300))
+    .batch_spawn_agents(20, Prey,images=["images/white.png"])
+    .batch_spawn_agents(10, Hunter,images=["images/red.png"])
+    .batch_spawn_agents(15, Grass, images=["images/green.png"])
+    .run()
+    )
+    data = df.snapshots
+    df_snapshots = pd.DataFrame(data)
+    df_snapshots.to_csv(f"properdata_{i}.csv", index=False)
 
 # df = pd.DataFrame({"Index": population.dct_hunt.keys(),
 #     'Hunt': population.dct_hunt.values(),

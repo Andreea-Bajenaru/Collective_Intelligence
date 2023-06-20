@@ -1,25 +1,25 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-
-df = pd.read_csv('proper_data5.csv')
-
-
-agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
-print(agent_counts)
-excluded_agent_type = 'Grass'
-agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
+for i in range(5):
+    df = pd.read_csv(f'properdata{i}.csv')
 
 
-pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
+    agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
+    print(agent_counts)
+    excluded_agent_type = 'Grass'
+    agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
 
-# Plot a bar graph
-pivot_table.plot(kind='line', stacked=True)
 
-# Customize the plot
-plt.xlabel('Time Frames')
-plt.ylabel('Agent Count')
-plt.title('Agent Counts for Each Time Frame')
-plt.legend(title='Agent Type')
+    pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
 
-# Display the plot
-plt.show()
+    # Plot a bar graph
+    pivot_table.plot(kind='line', stacked=True)
+
+    # Customize the plot
+    plt.xlabel('Time Frames')
+    plt.ylabel('Agent Count')
+    plt.title('Agent Counts for Each Time Frame')
+    plt.legend(title='Agent Type')
+
+    # Display the plot
+    plt.show()
