@@ -1,17 +1,25 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-df = pd.read_csv('dataset_important.csv')
+df = pd.read_csv('proper_data5.csv')
 
-# Extract the features from the DataFrame
-feature1 = df['Hunt']
-feature2 = df['Prey']
-feature3 = df["Index"]
-# Plotting the graph
-plt.plot(feature3, feature1, label='Hunt')
-plt.plot(feature3, feature2, label='Prey')
-plt.xlabel('Time Frame')
-plt.ylabel('Value')
-plt.title('Graph of Hunt and Prey')
-plt.legend()
+
+agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
+print(agent_counts)
+excluded_agent_type = 'Grass'
+agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
+
+
+pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
+
+# Plot a bar graph
+pivot_table.plot(kind='line', stacked=True)
+
+# Customize the plot
+plt.xlabel('Time Frames')
+plt.ylabel('Agent Count')
+plt.title('Agent Counts for Each Time Frame')
+plt.legend(title='Agent Type')
+
+# Display the plot
 plt.show()

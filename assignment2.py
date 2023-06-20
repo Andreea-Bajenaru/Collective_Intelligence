@@ -16,10 +16,13 @@ class CountPop():
         self.count = count
         self.dct_prey = dct_prey
         self.dct_hunt = dct_hunt
+        self.killing_parameter = [0.01, 0.23]
+
 
 population = CountPop()
 
 class Grass(Agent):
+
 
     def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, grow = 750):
         super().__init__(images, simulation, pos, move)
@@ -33,6 +36,8 @@ class Grass(Agent):
                 self.reproduce()
                 self.grow = 750
         self.grow -= 1
+
+        self.save_data("Type", "Grass")
 
 
 class Prey(Agent):
@@ -72,6 +77,8 @@ class Prey(Agent):
         if self.energy == 0:
             self.kill()
             population.pop_prey -=  1
+        
+        self.save_data("Type", "Prey")
         
 
 class Hunter(Agent):
@@ -170,9 +177,11 @@ class Hunter(Agent):
 
             if self.inner_counter not in population.dct_hunt.keys():
                 population.dct_hunt[self.inner_counter] = population.pop_hunt
-
             self.age += 1
             self.inner_counter += 1
+
+        self.save_data("Type", "Hunter")
+
 
 
 # class Hunter2(Hunter):
@@ -183,13 +192,22 @@ class Hunter(Agent):
 config = Config()
 x, y = config.window.as_tuple()
 
-df = (Simulation(Config(radius=25, fps_limit=60))
-                        .batch_spawn_agents(20, Prey,images=["images/white.png"])
-                        .batch_spawn_agents(10, Hunter,images=["images/red.png"])
-                        .batch_spawn_agents(15, Grass, images=["images/green.png"])
-                        .run()
-                        )
+# lst = [0.01, 0.023, 0.54]
+# lst2 = [0.034, 0.34, 0.544]
+# list_number = len(lst)
+# specifi_killing_prob = np.random(0, list_number)
 
+
+# for i in range(3):
+df = (Simulation(Config(radius=25, fps_limit=60, duration=60*120))
+.batch_spawn_agents(20, Prey,images=["images/white.png"])
+.batch_spawn_agents(10, Hunter,images=["images/red.png"])
+.batch_spawn_agents(15, Grass, images=["images/green.png"])
+.run()
+)
+data = df.snapshots
+df_snapshots = pd.DataFrame(data)
+df_snapshots.to_csv(f"proper_data5.csv", index=False)
 
 # df = pd.DataFrame({"Index": population.dct_hunt.keys(),
 #     'Hunt': population.dct_hunt.values(),
