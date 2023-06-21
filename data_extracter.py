@@ -1,25 +1,30 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-for i in range(5):
-    df = pd.read_csv(f'properdata{i}.csv')
 
+df = pd.read_csv('datasets/random_attempt/experiment_0_2.csv')
 
-    agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
-    print(agent_counts)
-    excluded_agent_type = 'Grass'
-    agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
+agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
+print(agent_counts)
+excluded_agent_type = 'Grass'
+agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
 
+pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
 
-    pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
+# Plot a line graph
+fig, ax = plt.subplots()
+pivot_table.plot(kind='line', stacked=True, ax=ax)
 
-    # Plot a bar graph
-    pivot_table.plot(kind='line', stacked=True)
+# Customize the plot
+plt.xlabel('Time Frames', color='red')
+plt.ylabel('Agent Count', color='blue')
+plt.title('Agent Counts for Each Time Frame', color='green')
+plt.legend(title='Agent Type', facecolor='yellow', edgecolor='black', framealpha=0.7)
 
-    # Customize the plot
-    plt.xlabel('Time Frames')
-    plt.ylabel('Agent Count')
-    plt.title('Agent Counts for Each Time Frame')
-    plt.legend(title='Agent Type')
+# Set background color
+fig.patch.set_facecolor('lightgray')
 
-    # Display the plot
-    plt.show()
+# Set line colors
+ax.set_prop_cycle(color=['purple', 'orange', 'cyan', 'magenta', 'brown', 'gray'])
+
+# Show the plot
+plt.show()

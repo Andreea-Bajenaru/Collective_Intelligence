@@ -8,23 +8,10 @@ import numpy as np
 import pandas as pd
 from vi.simulation import HeadlessSimulation
 
-
-class CountPop():
-    def __init__(self, pop_prey=20, pop_hunt=10, count=0, dct_prey={}, dct_hunt={}):
-        self.pop_prey = pop_prey
-        self.pop_hunt = pop_hunt
-        self.count = count
-        self.dct_prey = dct_prey
-        self.dct_hunt = dct_hunt
-        self.killing_parameter = [0.01, 0.23]
-
-
-population = CountPop()
-
 class Grass(Agent):
 
 
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, grow = 750):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, grow = 1000):
         super().__init__(images, simulation, pos, move)
         self.grow = grow
 
@@ -34,7 +21,7 @@ class Grass(Agent):
         if self.grow == 0:
             if number_grass < 4:
                 self.reproduce()
-                self.grow = 750
+                self.grow = 1000
         self.grow -= 1
 
         self.save_data("Type", "Grass")
@@ -42,18 +29,17 @@ class Grass(Agent):
 
 class Prey(Agent):
     
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy = 1000):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy = 1500):
         super().__init__(images, simulation, pos, move)
         self.energy = energy
     def update(self):
         self.there_is_no_escape()
-        population.count += 1
         
         rep_prob = np.random.uniform()
                 
         if rep_prob < 0.0009:
             self.reproduce()
-            population.pop_prey +=  1
+
 
         grass = (
             self.in_proximity_accuracy()
@@ -69,20 +55,19 @@ class Prey(Agent):
         if grass is not None and grass_num > 1 and friend < 2:
             grass.kill()
             self.reproduce()
-            population.pop_prey +=  (grass_num - 1)
+            self.energy = 1500
         
         self.energy -= 1
         
 
         if self.energy == 0:
             self.kill()
-            population.pop_prey -=  1
         
         self.save_data("Type", "Prey")
         
 
 class Hunter(Agent):
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=1200, inner_counter=0, age=0):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=2000, inner_counter=0, age=0):
         super().__init__(images, simulation, pos, move)
         self.energy = energy
         self.inner_counter = inner_counter
@@ -93,9 +78,8 @@ class Hunter(Agent):
         ##########################
         # Comment the following for energy level sim
         survive = np.random.uniform()
-        if survive < 0.001:
+        if survive < 0.0009:
            self.kill()
-           population.pop_hunt -=  1
         ###########################
         prey = (
             self.in_proximity_accuracy()
@@ -105,19 +89,15 @@ class Hunter(Agent):
         )
         ###########################
         # Comment the following for energy free sim
-        self.energy -= 1
         ###########################
-        if prey is not None:
+        prob = np.random.uniform()
+        if prey is not None and prob < 0.009:
             prey.kill()
             self.reproduce()
-            population.pop_hunt +=  1
-            population.pop_prey -=  1
-
-            self.energy = 1200
+            self.energy = 2000
 
         if self.energy == 0:
             self.kill()
-            population.pop_hunt -=  1
 
         if self.in_proximity_accuracy().count() == 0:
             self.pos += self.move
@@ -164,50 +144,38 @@ class Hunter(Agent):
             #     self.reproduce()
             #     population.pop_hunt += 1
             self.move += total_force
-            prob = round(self.age / 180)
+            prob = round(self.age / 150)
             if prob == 0:
                 self.pos += self.move
             else:
                 self.pos += (self.move) / prob
 
-                
-
-            if self.inner_counter not in population.dct_prey.keys():
-                population.dct_prey[self.inner_counter] = population.pop_prey
-
-            if self.inner_counter not in population.dct_hunt.keys():
-                population.dct_hunt[self.inner_counter] = population.pop_hunt
             self.age += 1
-            self.inner_counter += 1
+            self.energy -= 1
 
         self.save_data("Type", "Hunter")
-
-
-
-# class Hunter2(Hunter):
-#     def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=1200, inner_counter=0):
-#         super().__init__(images, simulation, pos, move, energy, inner_counter)
-
 
 config = Config()
 x, y = config.window.as_tuple()
 
-# lst = [0.01, 0.023, 0.54]
-# lst2 = [0.034, 0.34, 0.544]
-# list_number = len(lst)
-# specifi_killing_prob = np.random(0, list_number)
+df = (HeadlessSimulation(Config(radius=20, duration=60*450))
+.batch_spawn_agents(20, Prey,images=["images/white.png"])
+.batch_spawn_agents(10, Hunter,images=["images/red.png"])
+.batch_spawn_agents(20, Grass, images=["images/green.png"])
+.run()
+)
+data = df.snapshots
+df_snapshots = pd.DataFrame(data)
 
+# Extract first and last column
+first_column = df_snapshots.iloc[:, 0]
+last_column = df_snapshots.iloc[:, -1]
 
-for i in range(5):
-    df = (HeadlessSimulation(Config(radius=25, fps_limit=60, duration=60*300))
-    .batch_spawn_agents(20, Prey,images=["images/white.png"])
-    .batch_spawn_agents(10, Hunter,images=["images/red.png"])
-    .batch_spawn_agents(15, Grass, images=["images/green.png"])
-    .run()
-    )
-    data = df.snapshots
-    df_snapshots = pd.DataFrame(data)
-    df_snapshots.to_csv(f"properdata_{i}.csv", index=False)
+# Create a new DataFrame with only the first and last column
+df_selected = pd.concat([first_column, last_column], axis=1)
+
+# Save the selected data to a CSV file
+df_selected.to_csv("datasets/random_attempt/experiment_0_25.csv", index=False)
 
 # df = pd.DataFrame({"Index": population.dct_hunt.keys(),
 #     'Hunt': population.dct_hunt.values(),
