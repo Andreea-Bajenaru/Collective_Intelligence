@@ -175,7 +175,7 @@ last_column = df_snapshots.iloc[:, -1]
 df_selected = pd.concat([first_column, last_column], axis=1)
 
 # Save the selected data to a CSV file
-df_selected.to_csv("datasets/random_attempt/experiment_1_29.csv", index=False)
+df_selected.to_csv("datasets/random_attempt/experiment_1_8.csv", index=False)
 
 # df = pd.DataFrame({"Index": population.dct_hunt.keys(),
 #     'Hunt': population.dct_hunt.values(),
