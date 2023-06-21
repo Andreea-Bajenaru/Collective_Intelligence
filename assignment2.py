@@ -161,7 +161,7 @@ x, y = config.window.as_tuple()
 df = (HeadlessSimulation(Config(radius=20, duration=60*450))
 .batch_spawn_agents(20, Prey,images=["images/white.png"])
 .batch_spawn_agents(10, Hunter,images=["images/red.png"])
-.batch_spawn_agents(20, Grass, images=["images/green.png"])
+.batch_spawn_agents(35, Grass, images=["images/green.png"])
 .run()
 )
 data = df.snapshots
@@ -175,7 +175,7 @@ last_column = df_snapshots.iloc[:, -1]
 df_selected = pd.concat([first_column, last_column], axis=1)
 
 # Save the selected data to a CSV file
-df_selected.to_csv("datasets/random_attempt/experiment_0_25.csv", index=False)
+df_selected.to_csv("datasets/random_attempt/experiment_1_29.csv", index=False)
 
 # df = pd.DataFrame({"Index": population.dct_hunt.keys(),
 #     'Hunt': population.dct_hunt.values(),

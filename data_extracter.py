@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-df = pd.read_csv('datasets/random_attempt/experiment_0_2.csv')
+df = pd.read_csv('datasets/random_attempt/experiment_1_3.csv')
 
 agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
 print(agent_counts)
