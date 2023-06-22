@@ -7,6 +7,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 from vi.simulation import HeadlessSimulation
+import matplotlib.pyplot as plt
 
 # find a way to count the population
 
@@ -59,7 +60,7 @@ class Prey(Agent):
         if self.energy == 0:
             self.kill()
         self.pos += self.move
-
+        
 
 class Hunter(Agent):
     def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=1200):
@@ -154,7 +155,6 @@ class Hunter(Agent):
             # # We update the position of the bird
             self.pos += self.move
 
-
 config = Config()
 x, y = config.window.as_tuple()
 
@@ -182,3 +182,4 @@ column_name_mapping = {'1': 'id',
 dfsss = dfss.rename(columns=column_name_mapping)
 dfsss.to_csv('Assignment_2/sim_data.csv', index=False)
 
+print(dfsss)
