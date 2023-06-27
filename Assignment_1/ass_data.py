@@ -20,10 +20,6 @@ class MyAgent(Agent):
         self.join = 0.2
         self.leave = 0.6
 
-
-        
-
-
     def update(self):
         neighbours = 3
         site_id = self.on_site_id()
