@@ -10,13 +10,12 @@ from vi.simulation import HeadlessSimulation
 
 
 class CountPop():
-    def __init__(self, pop_prey=20, pop_hunt=10,rad=20, counter1=0, counter2=0, rad2=30):
+    def __init__(self, pop_prey=20, pop_hunt=10,rad=20, counter1=0, counter2=0):
         self.pop_prey = pop_prey
         self.pop_hunt = pop_hunt
         self.rad = rad
         self.counter1 = counter1
         self.counter2 = counter2
-        self.rad2 = rad2
 
 pop = CountPop()
 
@@ -34,13 +33,13 @@ class Grass(Agent):
                 if self.grow == 0:
                     if number_grass < 4:
                         self.reproduce()
-                        self.grow = 1100
+                        self.grow = 700
         else:
             number_grass = self.in_proximity_accuracy().filter_kind(Grass).count()
             if self.grow == 0:
                 if number_grass < 4:
                     self.reproduce()
-                    self.grow = 900
+                    self.grow = 700
 
         self.grow -= 1
 
@@ -48,7 +47,7 @@ class Grass(Agent):
 
 
 class Prey(Agent):
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy = 1000, counter=25, counter2=0):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy = 1100, counter=25, counter2=0):
         super().__init__(images, simulation, pos, move)
         self.energy = energy
         self.counter = counter
@@ -101,7 +100,7 @@ class Prey(Agent):
             self.counter = 25
 
             rep_prob = np.random.uniform()        
-            if rep_prob < 0.0002:
+            if rep_prob < 0.0009:
                 self.reproduce()
 
             grass= (
@@ -113,11 +112,10 @@ class Prey(Agent):
                 grass_num = self.in_proximity_accuracy().filter_kind(Grass).count() if grass[1] <= pop.rad else None
 
                 friend = self.in_proximity_accuracy().filter_kind(Prey).count()
-                probability = np.random.uniform()
-                if grass_num is not None and grass_num > 1 and friend < 4 and probability < 0.19:
+                if grass_num is not None and grass_num > 1 and friend < 2:
                     grass[0].kill()
                     self.reproduce()
-                    self.energy = 1500
+                    self.energy = 1100
 
             # hunt = self.in_proximity_accuracy().filter_kind(Hunter).first()
             # hunt2 = self.in_proximity_accuracy().filter_kind(Hunter2).first()
@@ -136,7 +134,7 @@ class Prey(Agent):
         self.save_data("Type", "Prey") 
 
 class Hunter(Agent):
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=1575, inner_counter=0, age=0, count=0):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=800, inner_counter=0, age=0, count=0):
         super().__init__(images, simulation, pos, move)
         self.energy = energy
         self.inner_counter = inner_counter
@@ -161,12 +159,10 @@ class Hunter(Agent):
             .filter_kind(Prey)
             .first()
             )
-        if prey is not None and prey[1] < pop.rad:
-            friend = self.in_proximity_accuracy().filter_kind(Hunter).count()
-            if prey is not None and random < 0.008 and friend < 3:
-                prey[0].kill()
-                #self.reproduce()
-                self.energy = 1575
+        if prey is not None and prey[1] <= pop.rad and random < 0.05:
+            prey[0].kill()
+            self.reproduce()
+            self.energy = 800
 
         if self.energy == 0:
             self.kill()
@@ -204,13 +200,8 @@ class Hunter(Agent):
             if self.move.length() > sum_velocity.length():
                 self.move.normalize() * sum_velocity
 
-            prob12 = np.random.uniform()
-            if prob12 < 0.6:
-                self.move += total_force
-            else:
-                self.move = self.move
-
-            prob = round(self.age / 5000)
+            self.move += total_force
+            prob = round(self.age / 150)
             if prob == 0:
                 self.pos += self.move
             else:
@@ -225,16 +216,15 @@ class Hunter(Agent):
                 # neighbor = self.in_proximity_accuracy().filter_kind(Hunter2).count()
                 neighbor = self.in_proximity_accuracy().filter_kind(Hunter2).count()
                 prob = np.random.uniform()
-                if self.count > 100:
-                    if neighbor < 3 and prob < 0.065:
+                if self.count > 200:
+                    if neighbor == 1 and prob > 0.0002:
                         self.reproduce()
-                        self.energy = 1575
                         self.count = 0
 
         self.save_data("Type", "Hunter")
 
 class Hunter2(Agent):
-    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=2200, age=0, count=0):
+    def __init__(self, images: list[Surface], simulation: HeadlessSimulation, pos: Vector2 | None = None, move: Vector2 | None = None, energy=850, age=0, count=0):
         super().__init__(images, simulation, pos, move)
         self.age = age
         self.energy = energy
@@ -261,16 +251,16 @@ class Hunter2(Agent):
         # Comment the following for energy free sim
         ###########################
         prob = np.random.uniform()
-        if prey is not None and pop.rad >= prey[1] and prob < 0.003:
+        if prey is not None and prob < 0.02 and pop.rad >= prey[1]:
             prey[0].kill()
-            #self.reproduce()
-            self.energy = 2200
+            self.reproduce()
+            self.energy = 850
 
         if self.energy == 0:
             self.kill()
 
         self.age += 1
-        age = round(self.age / 5000)
+        age = round(self.age / 150)
         if age == 0:
             self.pos += self.move
         else:
@@ -282,11 +272,10 @@ class Hunter2(Agent):
             # neighbor = self.in_proximity_accuracy().filter_kind(Hunter2).count()
             neighbor = self.in_proximity_accuracy().filter_kind(Hunter).count()
             prob = np.random.uniform()
-            if self.count > 50:
-                if neighbor < 5 and prob < 0.08:
+            if self.count > 200:
+                if neighbor == 1 and prob > 0.0002:
                     self.reproduce()
                     self.move = self.move * -1
-                    self.energy = 2200
                     self.count = 0
 
         self.energy -= 1
@@ -317,13 +306,13 @@ class Hunter2(Agent):
 config = Config()
 x, y = config.window.as_tuple()
 
-df = (HeadlessSimulation(Config(radius=50, fps_limit=600000 ,duration=60*180))
-.batch_spawn_agents(40, Prey,images=["images/white.png"])
-.batch_spawn_agents(25, Hunter,images=["images/red.png"])
+df = (HeadlessSimulation(Config(radius=50, fps_limit=600000 ,duration=60*480))
+.batch_spawn_agents(25, Prey,images=["images/white.png"])
+.batch_spawn_agents(8, Hunter,images=["images/red.png"])
 .batch_spawn_agents(35, Grass, images=["images/green.png"])
-.batch_spawn_agents(25, Hunter2, images=["images/blue.png"])
-# .spawn_site("images/yellow_circle1.png", 200, 100)
-# .spawn_site("images/yellow_circle1.png", 500, 350)
+.batch_spawn_agents(8, Hunter2, images=["images/blue.png"])
+.spawn_site("images/yellow_circle1.png", 200, 100)
+.spawn_site("images/yellow_circle1.png", 500, 350)
 .run()
 .snapshots
 .groupby('frame')
@@ -338,7 +327,7 @@ df = (HeadlessSimulation(Config(radius=50, fps_limit=600000 ,duration=60*180))
 df_snapshots = pd.DataFrame(df)
 new_column_names = ["Time_Frame", "Grass", "Prey", "Hunter"]
 df_snapshots.columns = new_column_names
-df_snapshots.to_csv(f"datasets/random_attempt/week_3/try_2_5.csv", index=False)
+df_snapshots.to_csv(f"datasets/random_attempt/week_3/try_3_6.csv", index=False)
 # data = df.snapshots
 # df_snapshots = pd.DataFrame(data)
 # # Extract first and last column

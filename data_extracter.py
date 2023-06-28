@@ -1,53 +1,88 @@
-# import matplotlib.pyplot as plt
-# import pandas as pd
-# import scipy.signal as signal
-# import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import scipy.signal as signal
+import numpy as np
+import csv
 
 # # Set the dark background style
 # plt.style.use('dark_background')
 # data = {}
 # data2 = {}
+# results = {}
 # for i in range(30):
+# # Load the data from CSV
+df = pd.read_csv(f'datasets/random_attempt/week_3/try_2_5.csv')
+peaks, peaks2 = signal.find_peaks(df["Prey"], distance=4000, height=0)
+print(peaks2)
+# results.update({i:peaks2.values()})
 
-#     # Load the data from CSV
-#     df = pd.read_csv(f'datasets/random_attempt/experiment_1_{i}.csv')
+    # agent_counts = df.groupby(["0", "5"]).size().reset_index(name='count')
+    # excluded_agent_type = 'Grass'
+    # agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
 
-#     # Calculate agent counts
-#     agent_counts = df.groupby(['0', '5']).size().reset_index(name='count')
-#     excluded_agent_type = 'Grass'
-#     agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
+    # pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
+    
 
-#     pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
+    # # abcd = pivot_table["Prey"].values
 
-#     abcd = pivot_table["Prey"].values
+    # # Plot a line graph
+    # # fig, ax = plt.subplots(figsize=(8, 6))
+    # # pivot_table.plot(kind='line', stacked=True, ax=ax)
 
-#     # Plot a line graph
-#     # fig, ax = plt.subplots(figsize=(8, 6))
-#     # pivot_table.plot(kind='line', stacked=True, ax=ax)
+    # # Calculate peaks
+    # peaks, peaks2 = signal.find_peaks(pivot_table["Prey"], distance=4000, height=0)
+    # results.update({i:peaks2.values()})
 
-#     # Calculate peaks
-#     peaks, peaks2 = signal.find_peaks(pivot_table["Prey"].values, distance=4000, height=0)
 
-#     #Determine the number of peaks when a point is the highest among 100 points
-#     # highest_point_index = pivot_table.values.flatten().argmax()
-#     # highest_point_peaks = [peak for peak in peaks if (highest_point_index - 50) <= peak <= (highest_point_index + 50)]
-#     # # num_peaks = len(highest_point_peaks)
-#     # for i in peaks:
-#     #     print(abcd[i])
-#     for key, values in peaks2.items():
-#         value = values.tolist()
-#         sum = np.sum(value)
-#         number = len(value)
-#         mean = sum / number
-#         data.update({i:number})
-#         data2.update({i:mean})
-#         # data2.update({i:number})
+# csv_file_path = "peak_results2.csv"
+
+# # Write the results to the CSV file
+# with open(csv_file_path, 'w', newline='') as file:
+#     writer = csv.writer(file)
+#     writer.writerow(['Experiment combined', 'Peaks combined'])  # Write the header
+    
+#     for experiment, peaks_list in results.items():
+#         for peaks_array in peaks_list:
+#             writer.writerow([experiment] + peaks_array.tolist())
+
+# print("Peak results have been saved to", csv_file_path)
+
+
+# Calculate agent counts
+# agent_counts = df.groupby([]).size().reset_index(name='count')
+# excluded_agent_type = 'Grass'
+# agent_counts_filtered = agent_counts[agent_counts['5'] != excluded_agent_type]
+
+# pivot_table = agent_counts_filtered.pivot(index='0', columns='5', values='count')
+
+# abcd = pivot_table["Prey"].values
+
+# Plot a line graph
+# fig, ax = plt.subplots(figsize=(8, 6))
+# pivot_table.plot(kind='line', stacked=True, ax=ax)
+
+# Calculate peaks
+# peaks, peaks2 = signal.find_peaks(df["Prey"], distance=4000, height=0)
+
+#Determine the number of peaks when a point is the highest among 100 points
+# highest_point_index = pivot_table.values.flatten().argmax()
+# highest_point_peaks = [peak for peak in peaks if (highest_point_index - 50) <= peak <= (highest_point_index + 50)]
+# # num_peaks = len(highest_point_peaks)
+# for i in peaks:
+#     print(abcd[i])
+# for key, values in peaks2.items():
+#     value = values.tolist()
+#     sum = np.sum(value)
+#     number = len(value)
+#     mean = sum / number
+#     data.update({i:number})
+#     data2.update({i:mean})
+#     # data2.update({i:number})
 # print(data)
 # print(data2)
-
-# df = pd.DataFrame(data)
-# filename = 'datasets/random_attempt/peak_graph.csv'
-# df.to_csv(filename, index=False)
+    # df = pd.DataFrame(data)
+    # filename = 'datasets/random_attempt/peak_graph.csv'
+    # df.to_csv(filename, index=False)
 
 # # df2 = pd.DataFrame(data2)
 # # filename2 = 'datasets/random_attempt/peak_graph2.csv'
@@ -94,7 +129,7 @@ import pandas as pd
 plt.style.use('dark_background')
 
 # Read the data from CSV
-df = pd.read_csv('datasets/random_attempt/week_3/experiment_2_0.csv')
+df = pd.read_csv('datasets/random_attempt/week_3/try_2_5.csv')
 # print(df["Prey"].mean())
 # Plot a line graph
 fig, ax = plt.subplots(figsize=(8, 6))
