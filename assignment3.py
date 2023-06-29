@@ -327,7 +327,7 @@ df = (HeadlessSimulation(Config(radius=50, fps_limit=600000 ,duration=60*480))
 df_snapshots = pd.DataFrame(df)
 new_column_names = ["Time_Frame", "Grass", "Prey", "Hunter"]
 df_snapshots.columns = new_column_names
-df_snapshots.to_csv(f"datasets/random_attempt/week_3/try_3_6.csv", index=False)
+df_snapshots.to_csv(f"datasets/random_attempt/week_3/try_3_33.csv", index=False)
 # data = df.snapshots
 # df_snapshots = pd.DataFrame(data)
 # # Extract first and last column
