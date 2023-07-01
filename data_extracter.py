@@ -117,45 +117,45 @@ import csv
 
 
 
-import matplotlib.pyplot as plt
-import pandas as pd
+# import matplotlib.pyplot as plt
+# import pandas as pd
 
-plt.style.use('dark_background')
-# for i in range(1, 31):
-# Read the data from CSV
-df = pd.read_csv(f'datasets/nest_21.csv')
-# print(df["Prey"].mean())
-# Plot a line graph
-df['Time_Frame'] = df['Time_Frame'] / 60
-fig, ax = plt.subplots(figsize=(8, 6))
-df.plot(x='Time_Frame', y=['Prey', 'Hunter'], kind='line', stacked=False, ax=ax)
+# plt.style.use('dark_background')
+# # for i in range(30):
+# # Read the data from CSV
+# df = pd.read_csv(f'datasets/random_attempt/week_3/try_4_29.csv')
+# # print(df["Prey"].mean())
+# # Plot a line graph
+# df['Time_Frame'] = df['Time_Frame'] / 60
+# fig, ax = plt.subplots(figsize=(8, 6))
+# df.plot(x='Time_Frame', y=['Prey', 'Hunter'], kind='line', stacked=False, ax=ax)
 
-# Customize the plot
-plt.xlabel('Seconds', color='#CCCCCC', fontsize=14)
-plt.ylabel('Agent Count', color='#CCCCCC', fontsize=14)
-plt.title('Agent Counts for Each Second', color='goldenrod', fontsize=18)
-plt.legend(title='Agent Type', facecolor='#222222', edgecolor='#CCCCCC', framealpha=0.7, fontsize=10)
+# # Customize the plot
+# plt.xlabel('Seconds', color='#CCCCCC', fontsize=14)
+# plt.ylabel('Agent Count', color='#CCCCCC', fontsize=14)
+# plt.title('Agent Counts for Each Second', color='goldenrod', fontsize=18)
+# plt.legend(title='Agent Type', facecolor='#222222', edgecolor='#CCCCCC', framealpha=0.7, fontsize=10)
 
-# Set line colors
-line_colors = ['#FF0000', '#0000FF']  # Modified line colors (red and blue)
-ax.set_prop_cycle(color=line_colors)
+# # Set line colors
+# line_colors = ['#FF0000', '#0000FF']  # Modified line colors (red and blue)
+# ax.set_prop_cycle(color=line_colors)
 
-# Set grid color
-ax.grid(color='#333333', linestyle='--', linewidth=0.5)
+# # Set grid color
+# ax.grid(color='#333333', linestyle='--', linewidth=0.5)
 
-# Set spines color
-ax.spines['bottom'].set_color('#CCCCCC')
-ax.spines['left'].set_color('#CCCCCC')
-ax.spines['top'].set_color('none')
-ax.spines['right'].set_color('none')
+# # Set spines color
+# ax.spines['bottom'].set_color('#CCCCCC')
+# ax.spines['left'].set_color('#CCCCCC')
+# ax.spines['top'].set_color('none')
+# ax.spines['right'].set_color('none')
 
-# Set tick colors
-ax.tick_params(axis='x', colors='#CCCCCC')
-ax.tick_params(axis='y', colors='#CCCCCC')
-# Save the plot
-# plt.ylim(0, 200)
-plt.tight_layout()
-plt.show()
+# # Set tick colors
+# ax.tick_params(axis='x', colors='#CCCCCC')
+# ax.tick_params(axis='y', colors='#CCCCCC')
+# # Save the plot
+# # plt.ylim(0, 200)
+# plt.tight_layout()
+# plt.show()
 
 
 # import matplotlib.pyplot as plt
@@ -231,57 +231,57 @@ plt.show()
 # plt.tight_layout()
 # plt.show()
 
-# import matplotlib.pyplot as plt
-# import pandas as pd
-# import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 
-# plt.style.use('dark_background')
+plt.style.use('dark_background')
 
-# # Read the data from CSV
-# df = pd.read_csv('datasets/random_attempt/week_3/try_3_15.csv')
+# Read the data from CSV
+df = pd.read_csv(f'datasets/random_attempt/week_3/try_4_29.csv')
 
-# # Group the data by 100 time frames
-# grouped_df = df.groupby(df.index // 1000).mean()
+# Group the data by 100 time frames
+grouped_df = df.groupby(df.index // 1000).mean()
 
-# # Plot a line graph with scatter markers
-# fig, ax = plt.subplots(figsize=(8, 6))
-# ax.plot(grouped_df['Prey'], grouped_df['Hunter'], marker='o', linewidth=2)
+# Plot a line graph with scatter markers
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.plot(grouped_df['Prey'], grouped_df['Hunter'], marker='o', linewidth=2)
 
-# # Customize the plot
-# plt.xlabel('Number of Prey', color='#CCCCCC', fontsize=14)
-# plt.ylabel('Number of Hunters', color='#CCCCCC', fontsize=14)
-# plt.title('Number of Hunters vs Number of Prey (per 15 seconds)', color='goldenrod', fontsize=14)
-# plt.grid(color='#333333', linestyle='--', linewidth=0.5)
+# Customize the plot
+plt.xlabel('Number of Prey', color='#CCCCCC', fontsize=14)
+plt.ylabel('Number of Hunters', color='#CCCCCC', fontsize=14)
+plt.title('Number of Hunters vs Number of Prey (per 15 seconds)', color='goldenrod', fontsize=14)
+plt.grid(color='#333333', linestyle='--', linewidth=0.5)
 
-# # Set spines color
-# ax.spines['bottom'].set_color('#CCCCCC')
-# ax.spines['left'].set_color('#CCCCCC')
-# ax.spines['top'].set_color('none')
-# ax.spines['right'].set_color('none')
+# Set spines color
+ax.spines['bottom'].set_color('#CCCCCC')
+ax.spines['left'].set_color('#CCCCCC')
+ax.spines['top'].set_color('none')
+ax.spines['right'].set_color('none')
 
-# # Set tick colors
-# ax.tick_params(axis='x', colors='#CCCCCC')
-# ax.tick_params(axis='y', colors='#CCCCCC')
+# Set tick colors
+ax.tick_params(axis='x', colors='#CCCCCC')
+ax.tick_params(axis='y', colors='#CCCCCC')
 
-# # Generate colors for the lines using a colormap and multiply them by 3
-# num_lines = len(grouped_df) - 1
-# cmap = plt.cm.get_cmap('winter')
-# line_colors = cmap(np.linspace(0, 1, num_lines))
-# vmin = 0
-# vmax = num_lines * 15
+# Generate colors for the lines using a colormap and multiply them by 3
+num_lines = len(grouped_df) - 1
+cmap = plt.cm.get_cmap('winter')
+line_colors = cmap(np.linspace(0, 1, num_lines))
+vmin = 0
+vmax = num_lines * 15
 
-# # Draw lines between the nodes with different colors and show color scale
-# for i in range(num_lines):
-#     ax.plot(grouped_df['Prey'].iloc[i:i+2], grouped_df['Hunter'].iloc[i:i+2], color=line_colors[i])
+# Draw lines between the nodes with different colors and show color scale
+for i in range(num_lines):
+    ax.plot(grouped_df['Prey'].iloc[i:i+2], grouped_df['Hunter'].iloc[i:i+2], color=line_colors[i])
 
-# # Add color scale
-# sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=500))
-# sm.set_array([])
-# plt.colorbar(sm, label='Seconds Frame')
+# Add color scale
+sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=500))
+sm.set_array([])
+plt.colorbar(sm, label='Seconds Frame')
 
-# # Add legend
-# plt.legend()
+# Add legend
+plt.legend()
 
-# # Save the plot
-# plt.tight_layout()
-# plt.show()
+# Save the plot
+plt.tight_layout()
+plt.show()
